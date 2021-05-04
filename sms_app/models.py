@@ -2,18 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import *
 
-# class PersonInfo(models.Model):
-#     personInfoId = AutoField(primary_key=True)
-#     firstName = CharField(max_length=25, blank=False)
-#     secondName = CharField(max_length=25, blank=False)
-#     email = CharField(max_length=320, blank=True)
-#     phone = CharField(max_length=15, blank=False)
-
-# class Meta(models.Model):
-#     id = AutoField(primary_key=True)
-#     createDate = DateField(blank=False)
-#     updateDate = DateField(blank=False)
-#     addedBy = OneToOneField(User, on_delete=CASCADE)
 from _auth.models import User
 
 
@@ -24,12 +12,12 @@ class Post(models.Model):
 
 class Employee(models.Model):
     employeeId = AutoField(primary_key=True)
-    postId = ForeignKey(Post, on_delete=CASCADE, null=False)
-    userId = ForeignKey(User, on_delete=CASCADE, null=True)
+    postId = ForeignKey(Post, on_delete=PROTECT, null=False)
+    userId = ForeignKey(User, on_delete=PROTECT, null=True)
     hireDate = DateField(null=False)
 
 class Address(models.Model):
-    id = AutoField(primary_key=True)
+    addressId = AutoField(primary_key=True)
     country = CharField(max_length=56, null=False)
     state = CharField(max_length=30, null=False)
     city = CharField(max_length=85, null=False)
@@ -57,7 +45,31 @@ class Room(models.Model):
     roomType = ForeignKey(RoomType, on_delete=CASCADE, null=False)
     roomPlacesTypeId = ForeignKey(RoomPlacesType, on_delete=CASCADE, null=False)
 
+class TreatmentCourse(models.Model):
+    tcId = AutoField(primary_key=True)
+    name = CharField(max_length=40, null=False)
+    price = PositiveIntegerField(null=False, default=0)
 
+class CustomerInfo(models.Model):
+    customerInfoId = AutoField(primary_key=True)
+    firstName = CharField(max_length=25, null=False)
+    secondName = CharField(max_length=25, null=False)
+    email = CharField(max_length=320, null=True)
+    phone = CharField(max_length=15, null=False)
+    visitsCnt = SmallIntegerField(null=False, default=0)
+
+class Booking(models.Model):
+    bookingId = AutoField(primary_key=True)
+    roomId = ForeignKey(Room, on_delete=PROTECT, null=False)
+    checkIn = DateField(null=False)
+    checkOut = DateField(null=False)
+    addedBy = ForeignKey(Employee, on_delete=SET_DEFAULT, default=1, null=False)
+
+class Customer(models.Model):
+    customerId = AutoField(primary_key=True)
+    customerInfoId = ForeignKey(CustomerInfo, on_delete=CASCADE, null=False)
+    bookingId = ForeignKey(Booking, on_delete=CASCADE, null=False)
+    tcId = ForeignKey(TreatmentCourse, on_delete=SET_NULL, null=True)
 
 
 

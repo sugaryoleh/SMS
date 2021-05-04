@@ -8,3 +8,8 @@ admin.site.register(Sanatorium)
 admin.site.register(RoomPlacesType)
 admin.site.register(RoomType)
 admin.site.register(Room)
+admin.site.register(TreatmentCourse)
+admin.site.register(CustomerInfo)
+admin.site.register(Booking)
+admin.site.register(Customer)
+
