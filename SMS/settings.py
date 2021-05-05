@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'sms_app.apps.SmsAppConfig',
     '_auth.apps.AuthConfig',
+    'test_app.apps.TestAppConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

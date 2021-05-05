@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ entry_name }}</title>
+</head>
+<body>
+    {% for customer_field_name, field_value in entry.items %}
+    <p>
+        {{customer_field_name}}:&emsp;{{ field_value }}
+    </p>
+    {% endfor %}
+</body>
+</html>
