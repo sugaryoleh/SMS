@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+        <tr>
+        <tr class='clickable-row' data-href='https://google.com'>
+            <td>1</td>
+            <td>One</td>
+        </tr>
+        <tr class='clickable-row' data-href='https://instagram.com'>
+            <td>2</td>
+            <td>Two</td>
+        </tr>
+    </table>
+    <script>
+        jQuery(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+</body>
+</html>

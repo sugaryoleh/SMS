@@ -1,5 +1,5 @@
 from django import forms
-from sms_app.models import *
+from sms_app.models.models import *
 
 class BaseMeta:
     fields='__all__'

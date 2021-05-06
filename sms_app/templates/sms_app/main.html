@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SMS</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        .sidenav {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #ccc;
+      box-shadow: 0 0 15px -5px #000;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+    }
+    .sidenav .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
+    .sidenav a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 16px;
+      color: #000;
+      display: block;
+      transition: 0.3s;
+    }
+    .sidenav a:hover {
+      border-top: 1px solid #cfcfcf;
+      border-bottom: 1px solid #cfcfcf;
+    }
+</style>
+</head>
+<body>
+    <span style="font-size:20px;cursor:pointer" onclick="openNav(event)" class="burger-menu">&#9776;</span>
+    <div id="mySidenav" class="sidenav">
+       <div id="menu-nav">
+          <div class="logo-nav-mn">Tour-Guide</div>
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav(event)">&times;</a>
+          <a href="">Stories</a>
+          <a href="">Gallery</a>
+          <a href="">Features</a>
+          <a href="">Write to us</a>
+       </div>
+    </div>
+<script>
+    function openNav(event) {
+    console.log(event);
+    let nav = document.getElementById("mySidenav");
+    console.log(nav);
+       nav.style.display = "flex";
+      nav.style.width = "200px";
+      }
+
+      function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+      }
+</script>
+</body>
+</html>

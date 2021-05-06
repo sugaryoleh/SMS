@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ entry_name.capitalize }}</title>
+</head>
+<body>
+    {% for customer_field_name, field_value in entry.items %}
+    <p>
+        {{customer_field_name}}:&emsp;{{ field_value }}
+    </p>
+    {% endfor %}
+    <button onclick="redirect_to_update()">Update</button>
+    <button onclick="redirect_to_delete()">Delete</button>
+
+
+    <script>
+        function redirect_to_update()   {
+            window.location.href = "http://127.0.0.1:8000/sms/update/{{entry_name}}/{{entry_id}}";
+        }
+
+        function redirect_to_delete()   {
+            window.location.href = "http://127.0.0.1:8000/sms/delete/{{entry_name}}/{{entry_id}}";
+        }
+    </script>
+</body>
+</html>

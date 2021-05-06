@@ -5,7 +5,11 @@ from django.db.models import AutoField, CharField, ForeignKey, CASCADE
 
 class Role(models.Model):
     roleId = AutoField(primary_key=True)
-    name = CharField(max_length=20, blank=False)
+    name = CharField(max_length=20, blank=False, unique=True)
+
+    def __str__(self):
+        return self.name
+
 
 class User(AbstractUser):
-    roleId = ForeignKey(Role, on_delete=CASCADE, default=1, null=False)
+    role = ForeignKey(Role, on_delete=CASCADE, default=1, null=False)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from sms_app.models import *
+from sms_app.models.models import *
 
 admin.site.register(Address)
 admin.site.register(Employee)
