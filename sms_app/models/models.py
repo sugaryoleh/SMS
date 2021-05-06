@@ -174,6 +174,12 @@ class TreatmentCourse(models.Model, CustomModel):
     def retrieve_field_values(self):
         return (self.name, self.price)
 
+    @staticmethod
+    def retrieve_field_names():
+        return [field.capitalize() for field in RoomType.retrieve_field_names()]
+
+    def retrieve_field_values(self):
+        return (self.name, self.price)
 
 
 class CustomerInfo(models.Model, CustomModel):
@@ -235,6 +241,10 @@ class Booking(models.Model, CustomModel):
     payed = BooleanField(default=False, null=False)
     closed = BooleanField(default=False, null=False)
 
+    def save(self, *args, **kwargs):
+        if self.checkIn > self.checkOut:
+            raise ValueError("passingscore can't be greater than maxscore")
+        super().save(*args, **kwargs)
 
     @staticmethod
     def retrieve_field_names():

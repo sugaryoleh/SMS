@@ -45,10 +45,10 @@
     <span style="font-size:20px;cursor:pointer" onclick="openNav(event)" class="burger-menu">&#9776;</span>
     <div id="mySidenav" class="sidenav">
         <div id="menu-nav">
-        <div class="logo-nav-mn">Tour-Guide</div>
+            <div style="margin-left: 10px; margin-top: 10px"><b>Management pannel</b></div>
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav(event)">&times;</a>
             {% for name, link in content.items %}
-                <a href="/sms/view/{{link}}/">{{name}}</a>
+            <a href="/sms/view/{{link}}/">{{name}}</a>
             {% endfor %}
         </div>
     </div>
@@ -64,6 +64,10 @@
 
         function redirect_to_delete()   {
             window.location.href = "http://127.0.0.1:8000/sms/delete/{{entry_name}}/{{entry_id}}";
+        }
+
+    function redirect_to_create()   {
+            window.location.href = "http://127.0.0.1:8000/sms/add/{{entry_name}}/";
         }
 
     jQuery(document).ready(function($) {
