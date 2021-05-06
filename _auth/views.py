@@ -6,4 +6,4 @@ from django.shortcuts import render
 #         pass
 #     elif request.method == 'GET':
 #         context = {}
-#         return render(request, 'sms_app/update.html', context=context)
+#         return render(request, 'sms_app/change.html', context=context)

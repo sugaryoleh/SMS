@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Update {{ entry_name.capitalize }}</title>
-</head>
-<body>
+{% extends "sms_app/main.html" %}
+
+{% block title %}Update {{ entry_name.capitalize }}{% endblock %}
+
+{% block content %}
     <div class="main">
         <!-- Create a Form -->
         <form method="POST">
@@ -17,5 +15,5 @@
             <input type="submit" value="Update">
         </form>
     </div>
-</body>
-</html>
+{% endblock %}
+

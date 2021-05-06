@@ -28,6 +28,7 @@ class SanatoriumCreateForm(forms.ModelForm):
     class Meta(BaseMeta):
         model = Sanatorium
 
+
 class RoomTypeCreateForm(forms.ModelForm):
 
     class Meta(BaseMeta):
@@ -46,6 +47,31 @@ class RoomCreateForm(forms.ModelForm):
         model = Room
 
 
+class TreatmentCourseCreateForm(forms.ModelForm):
+
+    class Meta(BaseMeta):
+        model = TreatmentCourse
+
+
+class CustomerInfoCourseCreateForm(forms.ModelForm):
+
+    class Meta(BaseMeta):
+        model = CustomerInfo
+
+
+class CustomerCreateForm(forms.ModelForm):
+
+    class Meta(BaseMeta):
+        model = Customer
+
+
+class BookingCreateForm(forms.ModelForm):
+
+    class Meta(BaseMeta):
+        model = Booking
+
+
+
 def get_create_forms():
     return {
         'post':PostCreateForm,
@@ -55,8 +81,8 @@ def get_create_forms():
         'room_type':RoomTypeCreateForm,
         'room_places_type':RoomPlacesTypeCreateForm,
         'room':RoomCreateForm,
-        # 'treatment_course':TreatmentCourseCreateForm,
-        # 'customer_info':CustomerInfoCourseCreateForm,
-        # 'customer':CustomerCourseCreateForm,
-        # 'booking':BookingCourseCreateForm,
+        'treatment_course':TreatmentCourseCreateForm,
+        'customer_info':CustomerInfoCourseCreateForm,
+        'customer':CustomerCreateForm,
+        'booking':BookingCreateForm,
     }

@@ -1,8 +1,9 @@
-from django.contrib.auth.models import AbstractUser
+from datetime import timedelta
+
+from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 from django.db.models import *
 
-from _auth.models import User
 from sms_app.constraints import SANATORIUM_NAME_LENGTH
 
 from sms_app.models.custom_models import CustomModel
@@ -35,6 +36,7 @@ class Post(models.Model, CustomModel):
         return self.retrieve_field_values()
 
 
+
 class Address(models.Model, CustomModel):
     addressId = AutoField(primary_key=True)
     country = CharField(max_length=56, null=False)
@@ -42,10 +44,10 @@ class Address(models.Model, CustomModel):
     city = CharField(max_length=85, null=False)
     street = CharField(max_length=85, null=False)
     buildingNum = PositiveIntegerField(null=False)
-    buildingCorpse = CharField(max_length=1, null=False)
+    buildingCorpse = CharField(max_length=1, null=True)
 
     def __str__(self):
-        return str(self.buildingNum) + self.buildingCorpse + ' ' + self.street  + ', ' + self.city + ', ' + self.state\
+        return str(self.buildingNum) + self.buildingCorpse + ' ' + self.street + ', ' + self.city + ', ' + self.state\
                + ', ' + self.country
 
     @staticmethod
@@ -96,15 +98,18 @@ class RoomType(models.Model, CustomModel):
         return self.name
 
     @staticmethod
-    def retrieve_customer_field_names():
-        return ('Name', 'Description')
+    def retrieve_field_names():
+        return ('name', 'description')
 
     def retrieve_field_values(self):
         return (self.name, self.description)
 
     @staticmethod
-    def retrieve_field_names():
-        return ('name', 'description')
+    def retrieve_customer_field_names():
+        return [field.capitalize() for field in RoomType.retrieve_field_names()]
+
+    def retrieve_customer_field_values(self):
+        return self.retrieve_field_values()
 
 
 class RoomPlacesType(models.Model, CustomModel):
@@ -115,15 +120,18 @@ class RoomPlacesType(models.Model, CustomModel):
         return self.name
 
     @staticmethod
-    def retrieve_customer_field_names():
-        return ('Places count', 'Name')
+    def retrieve_field_names():
+        return ('placesCnt', 'name')
 
     def retrieve_field_values(self):
         return (self.placesCnt, self.name)
 
     @staticmethod
-    def retrieve_field_names():
-        return ('placesCnt', 'name')
+    def retrieve_customer_field_names():
+        return ('Places count', 'Name')
+
+    def retrieve_customer_field_values(self):
+        return self.retrieve_field_values()
 
 
 class Room(models.Model, CustomModel):
@@ -132,7 +140,7 @@ class Room(models.Model, CustomModel):
     roomNumber = SmallIntegerField(null=False)
     roomType = ForeignKey(RoomType, on_delete=CASCADE, null=False)
     roomPlacesType = ForeignKey(RoomPlacesType, on_delete=CASCADE, null=False)
-
+    price = IntegerField(null=True, default=0)
     def __str__(self):
         return 'Room#'+str(self.roomNumber) + ', ' + self.roomType.name + ', ' + self.roomPlacesType.name
 
@@ -151,19 +159,47 @@ class Room(models.Model, CustomModel):
         return (self.roomNumber, self.roomType.name, self.roomPlacesType.name)
 
 
-class TreatmentCourse(models.Model):
+class TreatmentCourse(models.Model, CustomModel):
     tcId = AutoField(primary_key=True)
     name = CharField(max_length=40, null=False)
     price = PositiveIntegerField(null=False, default=0)
 
+    def __str__(self):
+        return str(self.name) + '\t' + str(self.price)
 
-class CustomerInfo(models.Model):
+    @staticmethod
+    def retrieve_field_names():
+        return ('name', 'price')
+
+    def retrieve_field_values(self):
+        return (self.name, self.price)
+
+
+
+class CustomerInfo(models.Model, CustomModel):
     customerInfoId = AutoField(primary_key=True)
     firstName = CharField(max_length=25, null=False)
     secondName = CharField(max_length=25, null=False)
     email = CharField(max_length=320, null=True)
     phone = CharField(max_length=15, null=False)
     visitsCnt = SmallIntegerField(null=False)
+
+    def __str__(self):
+        return str(self.firstName) + ' ' + str(self.secondName)
+
+    @staticmethod
+    def retrieve_field_names():
+        return ('firstName', 'secondName', 'email', 'phone', 'visitsCnt')
+
+    def retrieve_field_values(self):
+        return (self.firstName, self.secondName, self.email, self.phone, self.visitsCnt)
+
+    @staticmethod
+    def retrieve_customer_field_names():
+        return ('First name', 'Second name', 'E-mail', 'Phone', 'Visits')
+
+    def retrieve_customer_field_values(self):
+        return self.retrieve_field_values()
 
 
 class Employee(models.Model, CustomModel):
@@ -173,8 +209,24 @@ class Employee(models.Model, CustomModel):
     sanatorium = ForeignKey(Sanatorium, on_delete=PROTECT, null=False)
     hireDate = DateField(null=False)
 
+    def __str__(self):
+        return self.user.get_full_name()
 
-class Booking(models.Model):
+    @staticmethod
+    def retrieve_field_names():
+        return ('name', 'post', 'sanatorium', 'hireDate')
+
+    def retrieve_field_values(self):
+        return (self.user.get_full_name(), self.post.name, self.sanatorium.name, self.hireDate)
+
+    @staticmethod
+    def retrieve_customer_field_names():
+        return ('Name', 'Post', 'Sanatorium', 'Hire date')
+
+    def retrieve_customer_field_values(self):
+        return self.retrieve_field_values()
+
+class Booking(models.Model, CustomModel):
     bookingId = AutoField(primary_key=True)
     room = ForeignKey(Room, on_delete=PROTECT, null=False)
     checkIn = DateField(null=False)
@@ -184,13 +236,51 @@ class Booking(models.Model):
     closed = BooleanField(default=False, null=False)
 
 
-class Customer(models.Model):
+    @staticmethod
+    def retrieve_field_names():
+        return ('room', 'checkIn', 'checkOut', 'addedBy', 'payed', 'closed')
+
+    def retrieve_field_values(self):
+        return (self.room, self.checkIn, self.checkOut, self.addedBy, self.payed, self.closed)
+
+    @staticmethod
+    def retrieve_customer_field_names():
+        return ('Room', 'Check in', 'Check out', 'Added by', 'Payed', 'Closed')
+
+    def retrieve_customer_field_values(self):
+        return self.retrieve_field_values()
+
+    def customer_dict(self):
+        room_total = (self.checkOut - self.checkIn).days*self.room.price
+        tc_total = sum([customer.tc.price for customer in Customer.objects.filter(booking=self)])
+        names = list(self.retrieve_customer_field_names())
+        names.append('Room total')
+        names.append('Treatment course total')
+        values = list(self.retrieve_field_values())
+        values.append(room_total)
+        values.append(tc_total)
+        return dict(zip(names, values))
+
+
+class Customer(models.Model, CustomModel):
     customerId = AutoField(primary_key=True)
     customerInfo = ForeignKey(CustomerInfo, on_delete=CASCADE, null=False)
     booking = ForeignKey(Booking, on_delete=CASCADE, null=False)
     tc = ForeignKey(TreatmentCourse, on_delete=SET_NULL, null=True)
 
+    @staticmethod
+    def retrieve_field_names():
+        return ('customerInfo', 'booking', 'treatmentCourse')
 
+    def retrieve_field_values(self):
+        return (self.customerInfo, self.booking, self.tc)
+
+    @staticmethod
+    def retrieve_customer_field_names():
+        return ('Customer', 'Booking', 'Treatment course')
+
+    def retrieve_customer_field_values(self):
+        return self.retrieve_field_values()
 
 def get_entries():
     return {
@@ -206,37 +296,3 @@ def get_entries():
         'customer':Customer,
         'booking':Booking,
     }
-
-
-def get_entries_manager():
-    all_entries = {
-        'Post':'post',
-        'Employee':'employee',
-        'Sanatorium':'sanatorium',
-        'Address':'address',
-        'Room Type':'room_type',
-        'Room Places Type':'room_places_type',
-        'Room': 'room',
-        'Treatment course': 'treatment_course',
-        'Customer info': 'customer_info',
-        'Customer': 'customer',
-        'Booking': 'booking'
-    }
-    superuser = all_entries.copy()
-    accountant = all_entries.copy()
-    booking_admin = all_entries.copy()
-    booking_admin.pop('Post')
-    booking_admin.pop('Employee')
-    sanatorium_manager = all_entries.copy()
-    chain_manager = all_entries.copy()
-
-
-
-
-
-
-
-
-
-
-

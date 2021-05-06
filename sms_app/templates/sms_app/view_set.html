@@ -1,0 +1,25 @@
+{% extends "sms_app/main.html" %}
+
+{% block title %}{{ entry_name.capitalize }}{% endblock %}
+
+{% block content %}
+    <table class="table" id="table">
+        <thead>
+            <tr>
+            {% for name in customer_field_names %}
+                <th onclick="sortTable({{forloop.counter0}})">{{ name }}</th>
+            {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entry_set %}
+                <tr class='clickable-row' data-href='{{ entry.pk }}'>
+                {% for field in entry.retrieve_customer_field_values %}
+                    <td>{{ field }}</td>
+                {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+

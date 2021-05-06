@@ -1,0 +1,13 @@
+{% extends "sms_app/main.html" %}
+
+{% block title %}{{ entry_name.capitalize }}{% endblock %}
+
+{% block content %}
+{% for customer_field_name, field_value in entry.items %}
+    <p>
+        {{customer_field_name}}:&emsp;{{ field_value }}
+    </p>
+    {% endfor %}
+    <button onclick="redirect_to_update()">Update</button>
+    <button onclick="redirect_to_delete()">Delete</button>
+{% endblock %}
