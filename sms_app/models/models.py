@@ -141,8 +141,15 @@ class Room(models.Model, CustomModel):
     roomType = ForeignKey(RoomType, on_delete=CASCADE, null=False)
     roomPlacesType = ForeignKey(RoomPlacesType, on_delete=CASCADE, null=False)
     price = IntegerField(null=True, default=0)
+
+    def save(self, *args, **kwargs):
+        print(Room.objects.filter(sanatorium=self.sanatorium))
+        if self.roomNumber in [room.roomNumber for room in Room.objects.filter(sanatorium=self.sanatorium)]:
+            raise ValueError("Cannot be created! Room with {} exists!".format(self.roomNumber))
+        super().save(self, *args, **kwargs)
+
     def __str__(self):
-        return 'Room#'+str(self.roomNumber) + ', ' + self.roomType.name + ', ' + self.roomPlacesType.name
+        return 'Room#'+str(self.roomNumber) + ', ' + self.sanatorium.name
 
     @staticmethod
     def retrieve_field_names():
@@ -175,10 +182,10 @@ class TreatmentCourse(models.Model, CustomModel):
         return (self.name, self.price)
 
     @staticmethod
-    def retrieve_field_names():
-        return [field.capitalize() for field in RoomType.retrieve_field_names()]
+    def retrieve_customer_field_names():
+        return [field.capitalize() for field in TreatmentCourse.retrieve_field_names()]
 
-    def retrieve_field_values(self):
+    def retrieve_customer_field_values(self):
         return (self.name, self.price)
 
 
@@ -211,7 +218,7 @@ class CustomerInfo(models.Model, CustomModel):
 class Employee(models.Model, CustomModel):
     employeeId = AutoField(primary_key=True)
     post = ForeignKey(Post, on_delete=PROTECT, null=False)
-    user = ForeignKey(User, on_delete=PROTECT, null=True)
+    user = ForeignKey(User, on_delete=CASCADE, null=True)
     sanatorium = ForeignKey(Sanatorium, on_delete=PROTECT, null=False)
     hireDate = DateField(null=False)
 
@@ -243,7 +250,7 @@ class Booking(models.Model, CustomModel):
 
     def save(self, *args, **kwargs):
         if self.checkIn > self.checkOut:
-            raise ValueError("passingscore can't be greater than maxscore")
+            raise ValueError("Cannot be deleted! Check-out date must be later or equal check-in date!")
         super().save(*args, **kwargs)
 
     @staticmethod
@@ -255,10 +262,23 @@ class Booking(models.Model, CustomModel):
 
     @staticmethod
     def retrieve_customer_field_names():
-        return ('Room', 'Check in', 'Check out', 'Added by', 'Payed', 'Closed')
+        return ('Customers', 'Room', 'Check in', 'Check out', 'Added by', 'Payed', 'Closed')
 
     def retrieve_customer_field_values(self):
-        return self.retrieve_field_values()
+        customers = list(Customer.objects.filter(booking=self))
+        customers = list(customer.customerInfo.firstName + ' ' + customer.customerInfo.secondName for customer in customers)
+        customers = ', '.join(customers)
+        payed = None
+        closed = None
+        if self.payed:
+            payed='Yes'
+        else:
+            payed='No'
+        if self.closed:
+            closed='Yes'
+        else:
+            closed='No'
+        return (customers, self.room, self.checkIn, self.checkOut, self.addedBy, payed, closed)
 
     def customer_dict(self):
         room_total = (self.checkOut - self.checkIn).days*self.room.price
@@ -266,9 +286,14 @@ class Booking(models.Model, CustomModel):
         names = list(self.retrieve_customer_field_names())
         names.append('Room total')
         names.append('Treatment course total')
+        names.append('Customers')
         values = list(self.retrieve_field_values())
         values.append(room_total)
         values.append(tc_total)
+        customers = list(Customer.objects.filter(booking=self))
+        customers = list(customer.customerInfo.firstName+' '+customer.customerInfo.secondName for customer in customers)
+        customers = ', '.join(customers)
+        values.append(customers)
         return dict(zip(names, values))
 
 
@@ -277,6 +302,13 @@ class Customer(models.Model, CustomModel):
     customerInfo = ForeignKey(CustomerInfo, on_delete=CASCADE, null=False)
     booking = ForeignKey(Booking, on_delete=CASCADE, null=False)
     tc = ForeignKey(TreatmentCourse, on_delete=SET_NULL, null=True)
+    sanatorium = ForeignKey(Sanatorium, on_delete=PROTECT, null=False, default=1)
+
+    def save(self, *args, **kwargs):
+        if len(Customer.objects.filter(booking=self.booking)) > self.booking.room.roomPlacesType.placesCnt:
+            raise ValueError("Cannot be add customer! Room is full!")
+        self.sanatorium = self.booking.room.sanatorium
+        super().save(*args, **kwargs)
 
     @staticmethod
     def retrieve_field_names():

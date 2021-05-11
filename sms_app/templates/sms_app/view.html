@@ -4,10 +4,24 @@
 
 {% block content %}
 {% for customer_field_name, field_value in entry.items %}
+<style>
+    .button {
+      transition-duration: 0.4s;
+    }
+
+    .button:hover {
+      background-color: #4CAF50; /* Green */
+      color: white;
+}
+</style>
     <p>
         {{customer_field_name}}:&emsp;{{ field_value }}
     </p>
     {% endfor %}
-    <button onclick="redirect_to_update()">Update</button>
-    <button onclick="redirect_to_delete()">Delete</button>
+    {% if can_change %}
+        <button style="transition-duration: 0.4s; background-color: #000000; :hover:background-color: #4CAF50;color: white;" onclick="redirect_to_change()">Update</button>
+    {% endif %}
+    {% if can_delete %}
+        <button style="transition-duration: 0.4s; background-color: #000000; :hover:background-color: #4CAF50;color: white;" onclick="redirect_to_delete()">Delete</button>
+    {% endif %}
 {% endblock %}

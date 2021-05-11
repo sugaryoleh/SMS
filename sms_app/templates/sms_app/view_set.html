@@ -3,10 +3,16 @@
 {% block title %}{{ entry_name.capitalize }}{% endblock %}
 
 {% block content %}
-    <button onclick="redirect_to_create()">Create</button>
+    {% if can_add %}
+      <div class="header-right">
+        <a class="active" href="/sms/add/{{entry_name}}/">Add</a>
+      </div>
+    {% endif %}
     <table class="table" id="table">
         <thead>
+
             <tr>
+            <th>#</th>
             {% for name in customer_field_names %}
                 <th onclick="sortTable({{forloop.counter0}})">{{ name }}</th>
             {% endfor %}
@@ -15,6 +21,7 @@
         <tbody>
             {% for entry in entry_set %}
                 <tr class='clickable-row' data-href='{{ entry.pk }}'>
+                    <td>{{ forloop.counter }}</td>
                 {% for field in entry.retrieve_customer_field_values %}
                     <td>{{ field }}</td>
                 {% endfor %}

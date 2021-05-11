@@ -6,42 +6,119 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <style>
-        .sidenav {
-      height: 100%;
-      width: 0;
-      position: fixed;
-      z-index: 1;
-      top: 0;
-      left: 0;
-      background-color: #ccc;
-      box-shadow: 0 0 15px -5px #000;
-      overflow-x: hidden;
-      transition: 0.5s;
-      padding-top: 60px;
+    body {
+        background-color:#efefef;
     }
-    .sidenav .closebtn {
-      position: absolute;
-      top: 0;
-      right: 25px;
-      font-size: 36px;
-      margin-left: 50px;
+      .sidenav {
+          height: 81%;
+          width: 0;
+          position: fixed;
+          z-index: 1;
+          top: 0;
+          left: 0;
+          background-color: #000000;
+          box-shadow: 0 0 15px -5px #000;
+          overflow-x: hidden;
+          transition: 0.5s;
+          padding-top: 60px;
+          margin-top: 7%;
+          color:#d37702;
+        }
+        .sidenav .closebtn {
+          position: absolute;
+          top: 0;
+          right: 25px;
+          font-size: 36px;
+          margin-left: 50px;
+          color:#d37702;
+        }
+        .sidenav a {
+          padding: 8px 8px 8px 32px;
+          text-decoration: none;
+          font-size: 16px;
+          color: #000;
+          display: block;
+          transition: 0.3s;
+          color:white;
+        }
+        .sidenav a:hover {
+          border-top: 1px solid #6B5B99;
+          border-bottom: 1px solid #cfcfcf;
+          color:white;
+        }
+    .header {
+      overflow: hidden;
+      background-color: #000000;
+      padding: 20px 10px;
     }
-    .sidenav a {
-      padding: 8px 8px 8px 32px;
+
+    /* Style the header links */
+    .header a {
+      float: left;
+      color: black;
+      text-align: center;
+      padding: 12px;
       text-decoration: none;
-      font-size: 16px;
-      color: #000;
-      display: block;
-      transition: 0.3s;
+      font-size: 18px;
+      line-height: 25px;
+      border-radius: 4px;
     }
-    .sidenav a:hover {
-      border-top: 1px solid #cfcfcf;
-      border-bottom: 1px solid #cfcfcf;
+
+    /* Style the logo link (notice that we set the same value of line-height and font-size to prevent the header to increase when the font gets bigger */
+    .header a.logo {
+      font-size: 25px;
+      font-weight: bold;
+      color: #d37702;
+    }
+
+    /* Change the background color on mouse-over */
+    .header a:hover {
+      background-color: #efefef;
+      color: black;
+    }
+
+    /* Style the active/current link*/
+    .header a.active {
+      background-color: #000000;
+      color: #d37702;
+    }
+
+    /* Float the link section to the right */
+    .header-right {
+      float: right;
+    }
+
+    /* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */
+    @media screen and (max-width: 500px) {
+      .header a {
+        float: none;
+        display: block;
+        text-align: left;
+      }
+      .header-right {
+        float: none;
+      }
+    }
+    .footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: #000000;
+      color: white;
+      text-align: center;
+      height: 5%;
     }
 </style>
 </head>
 <body>
-    <p><a href="{% url 'logout' %}?next=/auth/login">Logout</a></p>
+    <div class="header">
+      <a href="#default" class="logo">SMS - Sanatorium Management System</a>
+      <div class="header-right">
+        <a class="active" href="/sms">Home</a>
+        <a class="active" href="{% url 'logout' %}?next=/auth/login">Logout</a>
+      </div>
+    </div>
     <span style="font-size:20px;cursor:pointer" onclick="openNav(event)" class="burger-menu">&#9776;</span>
     <div id="mySidenav" class="sidenav">
         <div id="menu-nav">
@@ -56,9 +133,12 @@
         {% block content %}{% endblock %}
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <div class="footer">
+      <p style="color:#d37702; margin-top:5px;">Oleh Sakharchuk @ All rights reserved</p>
+    </div>
 <script>
 
-    function redirect_to_update()   {
+    function redirect_to_change()   {
             window.location.href = "http://127.0.0.1:8000/sms/change/{{entry_name}}/{{entry_id}}";
         }
 
@@ -66,7 +146,7 @@
             window.location.href = "http://127.0.0.1:8000/sms/delete/{{entry_name}}/{{entry_id}}";
         }
 
-    function redirect_to_create()   {
+    function redirect_to_add()   {
             window.location.href = "http://127.0.0.1:8000/sms/add/{{entry_name}}/";
         }
 

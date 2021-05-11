@@ -19,6 +19,24 @@ def access_validator(function):
     return wrap
 
 
+def can_add(request, entry_name):
+    for group in request.user.groups.all():
+        if 'add_{}'.format(entry_name.replace('_', '')) in [perm.codename for perm in group.permissions.all()]:
+            return True
+    return False
+
+def can_change(request, entry_name):
+    for group in request.user.groups.all():
+        if 'change_{}'.format(entry_name.replace('_', '')) in [perm.codename for perm in group.permissions.all()]:
+            return True
+    return False
+
+def can_delete(request, entry_name):
+    for group in request.user.groups.all():
+        if 'delete_{}'.format(entry_name.replace('_', '')) in [perm.codename for perm in group.permissions.all()]:
+            return True
+    return False
+
 def define_content_by_permission(request):
     app_name = SmsAppConfig.name
     for group in request.user.groups.all():
